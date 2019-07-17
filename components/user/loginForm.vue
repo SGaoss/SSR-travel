@@ -3,7 +3,6 @@
         :model="form" 
         ref="form"
         :rules="rules" 
-        v-model="form"
         class="form">
 
         <el-form-item class="form-item" prop="username">

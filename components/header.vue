@@ -13,7 +13,7 @@
         <nuxt-link to="/air">国内机票</nuxt-link>
       </el-row>
       <div>
-        <div v-if="false">
+        <div v-if="!$store.state.user.userInfo.token">
           <nuxt-link to="/user/login">登录/注册</nuxt-link>
         </div>
         <div>
