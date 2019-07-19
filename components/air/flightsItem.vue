@@ -47,6 +47,7 @@
                         </el-col>
                         <el-col :span="3" class="choose-button">
                             <el-button 
+                            @click="handleChoose(data.id, item.seat_xid)"
                             type="warning" 
                             size="mini">
                             选定
@@ -95,6 +96,17 @@ export default {
 
             return `${hours}时${min}分`;
         }
+    },
+    methods:{
+           handleChoose(id, seatId){
+            this.$router.push({
+                path: "/air/order", 
+                query: {
+                    id,
+                    seat_xid: seatId
+                }
+            })
+        },
     }
 }
 </script>

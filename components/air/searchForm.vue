@@ -204,6 +204,18 @@ export default {
                     query: this.form
                 })
             }
+
+            // 把搜索记录保存到本地
+            const airs = JSON.parse( localStorage.getItem("airs") || `[]`)
+
+            airs.unshift( this.form );
+
+            // 本地存储限制在5个之内
+            if(airs.length > 5){
+                airs.length = 5;
+            }
+
+            localStorage.setItem( 'airs',  JSON.stringify( airs ) );
         }
     },
     mounted() {

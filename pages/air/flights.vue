@@ -5,9 +5,7 @@
             <!-- 顶部过滤列表 -->
             <div class="flights-content">
                 <!-- 过滤条件 -->
-                <div>
-                    
-                </div>
+                <FlightsFilters  :data="fixedFlightsData" @changeDataList="changeDataList"/>
                 
                 <!-- 航班头部布局 -->
                 <FlightsListHead/>
@@ -36,7 +34,7 @@
 
             <!-- 侧边栏 -->
             <div class="aside">
-                <!-- 侧边栏组件 -->
+                <FlightsAside/>
             </div>
         </el-row>
     </section>
@@ -47,49 +45,81 @@
 import moment from "moment";
 import FlightsListHead from "@/components/air/flightsListHead"
 import FlightsItem from "@/components/air/flightsItem"
+import FlightsFilters from "@/components/air/flightsFilters"
+import FlightsAside from "@/components/air/flightsAside"
 export default {
   components: {
     FlightsListHead,
-    FlightsItem
+    FlightsItem,
+    FlightsFilters,
+    FlightsAside
   },
     data(){
         return {
           flightsData: {
-            flights: []
+            flights: [],
+            info: {},
+             options: {}
           },
-          dataList:[],
+          fixedFlightsData:{
+             flights: [ ],
+             info: {},
+             options: {}
+          },
+        //   dataList:[],
           pageIndex: 1, // 当前页数
           pageSize: 5,  // 当前页面的条数
           total: 0,     // 总条数
         }
     },
+     computed: {
+       dataList(){
+           return this.flightsData.flights.slice(
+              (this.pageIndex - 1) * this.pageSize,
+              this.pageSize * this.pageIndex);
+       }
+   },
+   
+    beforeRouteUpdate (to, from, next) {
+        next();
+        this.getData();
+    },
+     mounted () {
+     this.getData()
+   },
     methods: {
-        handleSizeChange(value){
-            this.pageSize = value;
-            this.setDataList();
-        },
-        handleCurrentChange(value){
-            this.pageIndex = value;
-            this.setDataList();
-        },
-        setDataList(){
-            this.dataList = this.flightsData.flights.slice(
-                (this.pageIndex - 1) * this.pageSize, 
-                this.pageSize * this.pageIndex
-            );
-        }
-    } ,
-   mounted () {
-      this.$axios({
+        getData(){
+             this.$axios({
                 url: `airs`,
                 method:"GET",
                 params: this.$route.query 
             }).then(res => {
-              console.log(res)
+            //   console.log(res)
                 this.flightsData = res.data;
-                this.dataList = this.flightsData.flights;
+                // this.dataList = this.flightsData.flights;
+                this.fixedFlightsData = {...res.data}
+                this.total = this.flightsData.flights.length;
             });
-   }
+        },
+        handleSizeChange(value){
+            this.pageSize = value;
+            // this.setDataList();
+        },
+        handleCurrentChange(value){
+            this.pageIndex = value;
+            // this.setDataList();
+        },
+        // setDataList(){
+        //     this.dataList = this.flightsData.flights.slice(
+        //         (this.pageIndex - 1) * this.pageSize, 
+        //         this.pageSize * this.pageIndex
+        //     );
+        // },
+        changeDataList(arr){
+            this.flightsData.flights = arr
+        }
+    } ,
+  
   
 }
 </script>
